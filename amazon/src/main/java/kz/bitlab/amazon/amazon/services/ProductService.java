@@ -1,23 +1,21 @@
 package kz.bitlab.amazon.amazon.services;
 
-
-import kz.bitlab.amazon.amazon.dto.ProductDto;
 import kz.bitlab.amazon.amazon.models.Product;
+import kz.bitlab.amazon.amazon.models.User;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 
 public interface ProductService {
 
     List<Product> listProducts(String title);
 
-    void delete(Long id);
+    void saveProduct(Principal principal, Product product, MultipartFile file1, MultipartFile file2, MultipartFile file3);
 
-    void add(Product product, MultipartFile image1, MultipartFile image2, MultipartFile image3) throws IOException;
+    User getUserByPrincipal(Principal principal);
+
+    void deleteProduct(Long id);
 
     Product getProductById(Long id);
-
-    List<Product> getAll();
-
 }

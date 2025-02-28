@@ -1,33 +1,27 @@
 package kz.bitlab.amazon.amazon.models;
 
+
 import jakarta.persistence.*;
 import kz.bitlab.amazon.amazon.models.enums.Role;
-import lombok.*;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
 
-@Data
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@Table(name = "t_users")
+@Table(name = "users")
+@Data
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "email", unique = true)
     private String email;
 
-    @Column(name = "phoneNumber")
+    @Column(name = "phone_number")
     private String phoneNumber;
 
     @Column(name = "name")
@@ -40,24 +34,26 @@ public class User implements UserDetails {
     private String password;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
+    @CollectionTable(name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles = new HashSet<>();
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
+    private List<Product> products = new ArrayList<>();
+    private LocalDateTime dateOfCreated;
 
-    private LocalDateTime createdAt;
 
     @PrePersist
-    public void init(){
-        createdAt = LocalDateTime.now();
+    private void init() {
+        dateOfCreated = LocalDateTime.now();
     }
+
+    // security
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.name()))
-                .collect(Collectors.toSet());
+        return roles;
     }
-
 
     @Override
     public String getUsername() {
@@ -84,3 +80,4 @@ public class User implements UserDetails {
         return active;
     }
 }
+

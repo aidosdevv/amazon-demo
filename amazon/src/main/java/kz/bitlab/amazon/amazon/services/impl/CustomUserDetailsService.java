@@ -1,6 +1,5 @@
 package kz.bitlab.amazon.amazon.services.impl;
 
-
 import kz.bitlab.amazon.amazon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,8 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CustomUserDetailsServiceImpl implements UserDetailsService {
-
+public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
